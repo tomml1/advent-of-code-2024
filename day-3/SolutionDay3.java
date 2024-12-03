@@ -64,18 +64,8 @@ public class SolutionDay3
             String everything = sb.toString();
             String firstPart = everything.split("(do\\(\\)|don't\\\\(\\\\))")[0];
 
-            String[] everythingSplitByDont = everything.split("don't\\(\\)");
-            String relevantForLastPart = everythingSplitByDont[everythingSplitByDont.length - 1];
-            String[] relevantForLastPartSplitByDo = relevantForLastPart.split("do\\(\\)");
-            
-            String lastPart = "";
-            int i = 1;
-
-            while (i < relevantForLastPartSplitByDo.length)
-            {
-                lastPart += relevantForLastPartSplitByDo[i];
-                i++;
-            }
+            String[] splitInverse = everything.split("don't\\(\\)(.*?)do\\(\\)");
+            String lastPart = splitInverse[splitInverse.length - 1];
 
             solution += doMultiplications(firstPart);
             solution += doMultiplications(lastPart);
