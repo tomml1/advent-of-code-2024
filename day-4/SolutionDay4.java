@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,8 +7,10 @@ import java.util.regex.Pattern;
 public class SolutionDay4 {
     public static void main(String[] args)
     {
-        star1();
-        //star2();
+        String[][] input = PuzzleUtils.readInputAs2DArray("C:\\Users\\thoma\\Github\\advent-of-code-2024\\day-4\\input.txt");
+
+        //star1();
+        star2(input);
     }
 
     public static void star1()
@@ -147,5 +150,28 @@ public class SolutionDay4 {
         }
 
         return result;
+    }
+
+    public static void star2(String[][] input)
+    {
+        int rows = input.length;
+        int columns = input[0].length;
+        int solution = 0;
+        for (int i = 1; i < rows - 1; i++)
+        {
+            for (int j = 1; j < columns - 1; j++)
+            {
+                if (input[i][j].equals("A"))
+                {
+                    String loru = input[i-1][j-1] + input[i+1][j+1];
+                    String luro = input[i+1][j-1] + input[i-1][j+1];
+                    if (loru.matches("SM|MS") && luro.matches("SM|MS"))
+                    {
+                        solution += 1;
+                    }
+                }
+            }
+        }
+        System.out.println("Ergebnis: " + solution);
     }
 }
