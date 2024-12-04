@@ -1,13 +1,9 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.LineNumberReader;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class PuzzleUtils {
     public static String readInputAsString(String filename)
