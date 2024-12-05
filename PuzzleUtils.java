@@ -88,7 +88,6 @@ public class PuzzleUtils {
     public static Map<Integer, List<Integer>> readInputAsMap(String filename)
     {
         Map<Integer, List<Integer>> map = new HashMap<>();
-        List<Integer> list = new ArrayList<>();
         try(BufferedReader br = new BufferedReader(new FileReader(filename)))
         {
             String line = br.readLine();
