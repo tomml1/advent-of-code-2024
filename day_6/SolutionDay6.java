@@ -21,7 +21,7 @@ public class SolutionDay6
         Set<Tuple<Integer, Integer>> visitedPositions = new HashSet<>();
         String currentDirection = "UP";
         String filePath = new File("").getAbsolutePath();
-        String[][] matrix = PuzzleUtils.readInputAs2DArray(filePath + "/day-6/input.txt");
+        String[][] matrix = PuzzleUtils.readInputAs2DArray(filePath + "/day_6/input.txt");
 
         System.out.println("Rows: " + matrix.length);
         System.out.println("Columns: " + matrix[0].length);

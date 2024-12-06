@@ -1,12 +1,11 @@
 package day_5;
 
-import utils.PuzzleUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import utils.PuzzleUtils;
 
 public class SolutionDay5 {
     public static void main(String[] args)

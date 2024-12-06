@@ -1,9 +1,10 @@
-import utils.PuzzleUtils;
+package day_4;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import utils.PuzzleUtils;
 
 public class SolutionDay4 {
     public static void main(String[] args)
