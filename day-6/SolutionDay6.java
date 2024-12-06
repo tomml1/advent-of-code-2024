@@ -3,6 +3,7 @@ package day_6;
 import utils.PuzzleUtils;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,8 +38,120 @@ public class SolutionDay6
             }
             //System.out.println();
         }
+        moveAndTurn(visitedPositions, positionGuard, matrix);
 
-        System.out.println("Position: " + positionGuard);
+        System.out.println("Path: " + visitedPositions.toString());
+
+        for(Tuple<Integer, Integer> position : visitedPositions)
+        {
+            matrix[position.x][position.y] = "X";
+        }
+
+        for(String[] row : matrix)
+        {
+            System.out.println(Arrays.toString(row));
+        }
+
+        System.out.println("solution: " + visitedPositions.size());
+    }
+
+    public static void moveAndTurn(Set<Tuple<Integer, Integer>> visitedPositions, Tuple<Integer, Integer> startPosition, String[][] matrix)
+    {
+        String direction = "UP";
+        boolean outOfBounds = false;
+        Tuple<Integer, Integer> position = startPosition;
+
+        while (!outOfBounds)
+        {
+            if (direction.equals("UP"))
+            {
+                if (position.x - 1 < 0)
+                {
+                    visitedPositions.add(new Tuple<Integer, Integer>(position.x, position.y));
+                    outOfBounds = true;
+                }
+                else
+                {
+                    if (matrix[position.x - 1][position.y].equals("#"))
+                    {
+                        //set direction to RIGHT
+                        direction = "RIGHT";
+                    }
+                    else
+                    {
+                        visitedPositions.add(new Tuple<Integer, Integer>(position.x, position.y));
+                        //set position to position.x - 1, position.y
+                        position = new Tuple<Integer, Integer>(position.x - 1, position.y);
+                    }
+                }
+            }
+            if (direction.equals("DOWN"))
+            {
+                if (position.x + 1 > matrix.length - 1)
+                {
+                    visitedPositions.add(new Tuple<Integer, Integer>(position.x, position.y));
+                    outOfBounds = true;
+                }
+                else
+                {
+                    if (matrix[position.x + 1][position.y].equals("#"))
+                    {
+                        //set direction to LEFT
+                        direction = "LEFT";
+                    }
+                    else
+                    {
+                        visitedPositions.add(new Tuple<Integer, Integer>(position.x, position.y));
+                        //set position to position.x + 1, position.y
+                        position = new Tuple<Integer, Integer>(position.x + 1, position.y);
+                    }
+                }
+            }
+            if (direction.equals("LEFT"))
+            {
+                if (position.y - 1 < 0)
+                {
+                    visitedPositions.add(new Tuple<Integer, Integer>(position.x, position.y));
+                    outOfBounds = true;
+                }
+                else
+                {
+                    if (matrix[position.x][position.y - 1].equals("#"))
+                    {
+                        //set direction to UP
+                        direction = "UP";
+                    }
+                    else
+                    {
+                        visitedPositions.add(new Tuple<Integer, Integer>(position.x, position.y));
+                        //set position to position.x, position.y - 1
+                        position = new Tuple<Integer, Integer>(position.x, position.y - 1);
+                    }
+                }
+            }
+            if (direction.equals("RIGHT"))
+            {
+                if (position.y + 1 > matrix[0].length - 1)
+                {
+                    visitedPositions.add(new Tuple<Integer, Integer>(position.x, position.y));
+                    outOfBounds = true;
+                }
+                else
+                {
+                    if (matrix[position.x][position.y + 1].equals("#"))
+                    {
+                        //set direction to DOWN
+                        direction = "DOWN";
+                    }
+                    else
+                    {
+                        visitedPositions.add(new Tuple<Integer, Integer>(position.x, position.y));
+                        //set position to position.x, position.y + 1
+                        position = new Tuple<Integer, Integer>(position.x, position.y + 1);
+                    }
+                }
+            }
+        }
     }
 }
 
