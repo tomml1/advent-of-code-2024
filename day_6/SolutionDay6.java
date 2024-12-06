@@ -22,7 +22,6 @@ public class SolutionDay6
     public static void star1()
     {
         Tuple<Integer, Integer> positionGuard = new Tuple<>(0, 0);
-        String currentDirection = "UP";
         String filePath = new File("").getAbsolutePath();
         String[][] matrix = PuzzleUtils.readInputAs2DArray(filePath + "/day_6/input.txt");
 
@@ -163,7 +162,6 @@ public class SolutionDay6
     {
         int solution = 0;
         Tuple<Integer, Integer> positionGuard = new Tuple<>(0, 0);
-        Set<Tuple<Integer, Integer>> visitedPositions = new HashSet<>();
         String filePath = new File("").getAbsolutePath();
         String[][] matrix = PuzzleUtils.readInputAs2DArray(filePath + "/day_6/input.txt");
 
@@ -220,7 +218,7 @@ public class SolutionDay6
                     }
                     else
                     {
-                        Tuple<Integer, Integer> toAdd = new Tuple(position.x, position.y);
+                        Tuple<Integer, Integer> toAdd = new Tuple<Integer, Integer>(position.x, position.y);
                         if (obstacleMap.get(toAdd) != null && obstacleMap.get(toAdd).contains("bottomToTop"))
                         {
                             return 1;
@@ -247,7 +245,7 @@ public class SolutionDay6
                     }
                     else
                     {
-                        Tuple<Integer, Integer> toAdd = new Tuple(position.x, position.y);
+                        Tuple<Integer, Integer> toAdd = new Tuple<Integer, Integer>(position.x, position.y);
                         if (obstacleMap.get(toAdd) != null && obstacleMap.get(toAdd).contains("topToBottom"))
                         {
                             return 1;
@@ -274,7 +272,7 @@ public class SolutionDay6
                     }
                     else
                     {
-                        Tuple<Integer, Integer> toAdd = new Tuple(position.x, position.y);
+                        Tuple<Integer, Integer> toAdd = new Tuple<Integer, Integer>(position.x, position.y);
                         if (obstacleMap.get(toAdd) != null && obstacleMap.get(toAdd).contains("rightToLeft"))
                         {
                             return 1;
@@ -301,7 +299,7 @@ public class SolutionDay6
                     }
                     else
                     {
-                        Tuple<Integer, Integer> toAdd = new Tuple(position.x, position.y);
+                        Tuple<Integer, Integer> toAdd = new Tuple<Integer, Integer>(position.x, position.y);
                         if (obstacleMap.get(toAdd) != null && obstacleMap.get(toAdd).contains("leftToRight"))
                         {
                             return 1;
