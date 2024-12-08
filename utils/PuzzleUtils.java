@@ -2,6 +2,7 @@ package utils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -140,6 +141,30 @@ public class PuzzleUtils {
         {
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+
+    public static Map<Long, long[]> readInputDay7(String filename)
+    {
+        Map<Long, long[]> input = new HashMap<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            String line = br.readLine();
+
+            while (line != null)
+            {
+                String[] resultAndFactors = line.split(":");
+                Long result = Long.parseLong(resultAndFactors[0]);
+                long[] factors = Arrays.stream(resultAndFactors[1].trim().split(" ")).mapToLong(Long::parseLong).toArray();
+                input.put(result, factors);
+                line = br.readLine();
+            }
+            return input;
+        }
+        catch(Exception e) 
+        {
+            e.printStackTrace();
+            return null;
         }
     }
 }
