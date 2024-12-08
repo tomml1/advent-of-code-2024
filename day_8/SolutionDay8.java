@@ -17,6 +17,7 @@ public class SolutionDay8
     public static void main(String[] args)
     {
         star1();
+        star2();
     }   
 
     public static void star1()
@@ -92,5 +93,67 @@ public class SolutionDay8
         {
             map.put(key, new ArrayList<>(Arrays.asList(value)));
         }
+    }
+
+    public static void star2()
+    {
+        String filePath = new File("").getAbsolutePath();
+        String[][] input = PuzzleUtils.readInputAs2DArray(filePath + "/day_8/input.txt");
+
+        Map<String, List<Point>> locations = new HashMap<>();
+
+        int numberRows = input.length;
+        int numberColumns = input[0].length;
+
+        for (int i = 0; i < numberRows; i++)
+        {
+            for (int j = 0; j < numberColumns; j++)
+            {
+                if (!input[i][j].equals("."))
+                {
+                    addToMap(input[i][j], new Point(i, j), locations);
+                }
+            }
+        }
+
+        System.out.println(locations);
+
+        Set<Point> antinodes = new HashSet<>();
+
+        for (Map.Entry<String, List<Point>> antennas : locations.entrySet())
+        {
+            for (Point point : antennas.getValue())
+            {
+                List<Point> remainingPoints = new ArrayList<>(antennas.getValue());
+                remainingPoints.remove(point);
+                antinodes.add(point);
+                for (Point remainingPoint : remainingPoints)
+                {
+                    int xDir = (int) (point.getX() - remainingPoint.getX());
+                    int yDir = (int) (point.getY() - remainingPoint.getY());
+                    boolean outOfBounds = false;
+                    int multiplier = 1;
+                    while(!outOfBounds)
+                    {
+                        Point antinode = new Point((int) point.getX() + multiplier * xDir, (int) point.getY() + multiplier * yDir);
+
+                        if (antinode.getX() >= 0 && antinode.getX() < numberRows && antinode.getY() >= 0 && antinode.getY() < numberColumns)
+                        {
+                            if (!antinodes.contains(antinode))
+                            {
+                                antinodes.add(antinode);
+                            }
+                        }
+                        else
+                        {
+                            outOfBounds = true;
+                        }
+                        multiplier++;
+                    }
+                }
+            }
+        }
+
+        System.out.println("Ergebnis: " + antinodes.size());
     }
 }
