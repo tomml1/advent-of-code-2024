@@ -4,7 +4,6 @@ import utils.PuzzleUtils;
 
 import java.io.File;
 import java.util.*;
-import day_9.FreeSpace;
 
 public class SolutionDay9
 {
@@ -126,10 +125,6 @@ public class SolutionDay9
             right--;
             System.out.println("Still calculating: "  + right);
         }
-        //String stringRep = getStringRepresentation(parsedInputAsList);
-        //System.out.println(stringRep);
-        //List<String> listRep = getListFromString(stringRep);
-        //System.out.println(listRep);
 
         List<String> listRep = getCorrectListFromString(parsedInputAsList);
         System.out.println(listRep);
