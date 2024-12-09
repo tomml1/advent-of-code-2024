@@ -80,7 +80,7 @@ public class SolutionDay9
     public static void star2()
     {
         String filePath = new File("").getAbsolutePath();
-        String input = PuzzleUtils.readInputAsString(filePath + "/day_9/testinput.txt");
+        String input = PuzzleUtils.readInputAsString(filePath + "/day_9/input.txt");
         LinkedList<Segment> parsedInputAsList = getInputAsSegmentList(input);
 
         int right = parsedInputAsList.size() - 1;
@@ -124,8 +124,28 @@ public class SolutionDay9
                 currentLeft = parsedInputAsList.get(left);
             }
             right--;
+            System.out.println("Still calculating: "  + right);
         }
-        System.out.println(getStringRepresentation(parsedInputAsList));
+        //String stringRep = getStringRepresentation(parsedInputAsList);
+        //System.out.println(stringRep);
+        //List<String> listRep = getListFromString(stringRep);
+        //System.out.println(listRep);
+
+        List<String> listRep = getCorrectListFromString(parsedInputAsList);
+        System.out.println(listRep);
+
+        int index = 0;
+        long solution = 0;
+        for (String element : listRep)
+        {
+            if (!element.equals("."))
+            {
+                solution += Long.parseLong(listRep.get(index)) * index;
+            }
+            index++;
+        }
+
+        System.out.println("Ergebnis: " + solution);
     }
 
     public static LinkedList<Segment> getInputAsSegmentList(String input)
@@ -160,5 +180,22 @@ public class SolutionDay9
         }
 
         return stringRepresentation;
+    }
+
+    public static List<String> getListFromString(String stringRepresentation)
+    {
+        String[] array = stringRepresentation.split("");
+        return Arrays.asList(array);
+    }
+
+    public static List<String> getCorrectListFromString(List<Segment> list)
+    {
+        List<String> stringList = new ArrayList<>();
+        for (Segment segment: list)
+        {
+            stringList.addAll(Collections.nCopies(segment.getSize(), segment.getContent()));
+        }
+
+        return stringList;
     }
 }
