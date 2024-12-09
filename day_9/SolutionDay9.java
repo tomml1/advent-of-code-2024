@@ -4,6 +4,7 @@ import utils.PuzzleUtils;
 
 import java.io.File;
 import java.util.*;
+import day_9.FreeSpace;
 
 public class SolutionDay9
 {
@@ -84,19 +85,32 @@ public class SolutionDay9
 
         //System.out.println(parsedInputAsList);
 
-        int left = 0;
-        int right = parsedInputAsList.size() - 1;
-
         ListIterator<Segment> liFromRight = parsedInputAsList.listIterator(parsedInputAsList.size());
         while(liFromRight.hasPrevious())
         {
             Segment currentRight = liFromRight.previous();
-            System.out.println("right: " + currentRight.toString());
+            //System.out.println("right: " + currentRight.toString());
             ListIterator<Segment> liFromLeft = parsedInputAsList.listIterator(0);
             Segment currentLeft = liFromLeft.next();
             while(currentLeft != currentRight)
             {
-                System.out.println("left: " + currentLeft);
+                //System.out.println("left: " + currentLeft);
+                if (currentLeft instanceof FreeSpace && currentRight instanceof FileBlock)
+                {
+                    int sizeDifference = currentLeft.size - currentRight.size;
+                    if (sizeDifference >= 0)
+                    {
+                        System.out.println(parsedInputAsList);
+                        liFromLeft.set(currentRight);
+                        liFromRight.set(currentLeft);
+                        System.out.println(parsedInputAsList);
+                        if (sizeDifference > 0)
+                        {
+                            FreeSpace remainingSpace = new FreeSpace(sizeDifference);
+                            liFromLeft.add(remainingSpace);
+                        }
+                    }
+                }
                 currentLeft = liFromLeft.next();
             }
         }
