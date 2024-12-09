@@ -30,7 +30,7 @@ public class PuzzleUtils {
         catch(Exception e) 
         {
             e.printStackTrace();
-            return "Big Oopsie";
+            return null;
         }
     }
 
