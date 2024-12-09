@@ -83,79 +83,49 @@ public class SolutionDay9
         String input = PuzzleUtils.readInputAsString(filePath + "/day_9/testinput.txt");
         LinkedList<Segment> parsedInputAsList = getInputAsSegmentList(input);
 
-        //System.out.println(parsedInputAsList);
+        int right = parsedInputAsList.size() - 1;
 
-        ListIterator<Segment> liFromRight = parsedInputAsList.listIterator(parsedInputAsList.size());
-        while(liFromRight.hasPrevious())
+        while(right >= 0)
         {
-            Segment currentRight = liFromRight.previous();
-            //System.out.println("right: " + currentRight.toString());
-            ListIterator<Segment> liFromLeft = parsedInputAsList.listIterator(0);
-            Segment currentLeft = liFromLeft.next();
+            int left = 0;
+            Segment currentRight = parsedInputAsList.get(right);
+            if (currentRight instanceof FreeSpace)
+            {
+                right--;
+                continue;
+            }
+            
+            Segment currentLeft = parsedInputAsList.get(left);
+
             while(currentLeft != currentRight)
             {
-                //System.out.println("left: " + currentLeft);
                 if (currentLeft instanceof FreeSpace && currentRight instanceof FileBlock)
                 {
                     int sizeDifference = currentLeft.size - currentRight.size;
                     if (sizeDifference >= 0)
                     {
-                        System.out.println(parsedInputAsList);
-                        liFromLeft.set(currentRight);
-                        liFromRight.set(currentLeft);
-                        System.out.println(parsedInputAsList);
+                        parsedInputAsList.set(left, currentRight);
                         if (sizeDifference > 0)
                         {
+                            FreeSpace spaceToRight = new FreeSpace(currentRight.getSize());
+                            parsedInputAsList.set(right, spaceToRight);
                             FreeSpace remainingSpace = new FreeSpace(sizeDifference);
-                            liFromLeft.add(remainingSpace);
+                            parsedInputAsList.add(left + 1, remainingSpace);
+                            right += 1;
                         }
+                        else
+                        {
+                            parsedInputAsList.set(right, currentLeft);
+                        }
+                        break;
                     }
                 }
-                currentLeft = liFromLeft.next();
-            }
-        }
-
-        System.out.println("should terminate");
-        /*
-        while (left < right)
-        {
-            if(parsedInputAsList.get(right) instanceof FreeSpace)
-            {
-                right--;
-            }
-            if (!(parsedInputAsList.get(left) instanceof FreeSpace))
-            {
                 left++;
+                currentLeft = parsedInputAsList.get(left);
             }
-            if (parsedInputAsList.get(left) instanceof FreeSpace && !(parsedInputAsList.get(right) instanceof FreeSpace))
-            {
-                parsedInputAsList.set(left, parsedInputAsList.get(right));
-                parsedInputAsList.set(right, ".");
-                left++;
-                right--;
-            }
-            else
-            {
-                if (!(parsedInputAsList.get(left) instanceof FreeSpace))
-                {
-                    left++;
-                }
-                if (parsedInputAsList.get(right) instanceof FreeSpace)
-                {
-                    right--;
-                }
-            }
+            right--;
         }
-
-        int index = 0;
-        long solution = 0;
-        while (!parsedInputAsList.get(index).equals("."))
-        {
-            solution += Long.parseLong(parsedInputAsList.get(index)) * index;
-            index++;
-        }
-        */
-
+        System.out.println(getStringRepresentation(parsedInputAsList));
     }
 
     public static LinkedList<Segment> getInputAsSegmentList(String input)
@@ -179,5 +149,16 @@ public class SolutionDay9
             }
         }
         return parsedInputAsList;
+    }
+
+    public static String getStringRepresentation(List<Segment> list)
+    {
+        String stringRepresentation = "";
+        for (Segment segment: list)
+        {
+            stringRepresentation += segment.getContent().repeat(segment.getSize());
+        }
+
+        return stringRepresentation;
     }
 }
