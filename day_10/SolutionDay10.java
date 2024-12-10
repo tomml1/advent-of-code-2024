@@ -3,7 +3,9 @@ package day_10;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import utils.PuzzleUtils;
 import java.awt.Point;
 
@@ -17,10 +19,10 @@ public class SolutionDay10
     public static void star1()
     {
         String filePath = new File("").getAbsolutePath();
-        int[][] input = PuzzleUtils.readInputAs2DIntArray(filePath + "/day_10/testinput.txt");
+        int[][] input = PuzzleUtils.readInputAs2DIntArray(filePath + "/day_10/input.txt");
 
 
-        List<Point> startPoints = new ArrayList<>();
+        Set<Point> startPoints = new HashSet();
 
         int rowNumber = input.length;
         int columnNumber = input[0].length;
@@ -38,27 +40,23 @@ public class SolutionDay10
             }
         }
 
-        //System.out.println(startPoints.toString());
-
-        //startPoints = Arrays.asList(new Point(0,2));
         int solution = 0;
-        List <Point> neighbouringPoints = checkNeighbours(startPoints, input);
-        System.out.println(startPoints);
-        System.out.println(neighbouringPoints);
-        //System.out.println(getScore(neighbouringPoints, input));
-        while(!startPoints.equals(neighbouringPoints))
+        for (Point p : startPoints)
         {
-            solution += getScore(neighbouringPoints, input);
-            startPoints = neighbouringPoints;
-            neighbouringPoints = checkNeighbours(startPoints, input);
-            System.out.println(neighbouringPoints);
+            Set<Point> neighbouringPoints = checkNeighbours(Set.of(p), input);
+        
+            while(!startPoints.equals(neighbouringPoints))
+            {
+                solution += getScore(neighbouringPoints, input);
+                startPoints = neighbouringPoints;
+                neighbouringPoints = checkNeighbours(startPoints, input);
+            }
         }
-        //System.out.println(startPoints);
-        //solution += getScore(startPoints, input);
+
         System.out.println("Ergebnis: " + solution);
     }
 
-    public static int getScore(List<Point> points, int[][] input)
+    public static int getScore(Set<Point> points, int[][] input)
     {
         int solution = 0;
         for (Point p : points)
@@ -73,9 +71,9 @@ public class SolutionDay10
         return solution;
     }
 
-    public static List<Point> checkNeighbours(List<Point> points, int[][] input)
+    public static Set<Point> checkNeighbours(Set<Point> points, int[][] input)
     {
-        List<Point> newPoints = new ArrayList<>();
+        Set<Point> newPoints = new HashSet<>();
 
         for(Point point : points)
         {
