@@ -166,4 +166,35 @@ public class PuzzleUtils {
             return null;
         }
     }
+
+    public static int[][] readInputAs2DIntArray(String filename)
+    {
+        try (LineNumberReader lnr = new LineNumberReader(new FileReader(filename)))
+        {
+            while ((lnr.readLine()) != null)
+            {
+                //
+            }
+
+            try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+            {
+                int lineNumber = 0;
+                String line = br.readLine();
+
+                int[][] lines = new int[lnr.getLineNumber()][line.split("").length];
+
+                while (line != null)
+                {
+                    lines[lineNumber] = Arrays.stream(line.split("")).mapToInt(Integer::parseInt).toArray();
+                    line = br.readLine();
+                    lineNumber++;
+                }
+
+                return lines;
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException();
+        }
+    }
 }
