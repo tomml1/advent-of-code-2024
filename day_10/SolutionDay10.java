@@ -1,10 +1,8 @@
 package day_10;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import utils.PuzzleUtils;
 import java.awt.Point;
@@ -22,7 +20,7 @@ public class SolutionDay10
         int[][] input = PuzzleUtils.readInputAs2DIntArray(filePath + "/day_10/input.txt");
 
 
-        Set<Point> startPoints = new HashSet();
+        Set<Point> startPoints = new HashSet<>();
 
         int rowNumber = input.length;
         int columnNumber = input[0].length;
