@@ -3,10 +3,8 @@ package day_12;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import utils.PuzzleUtils;
 import java.awt.Point;
@@ -26,8 +24,6 @@ public class SolutionDay12
 
         int rows = input.length;
         int columns = input[0].length;
-
-        Map<String, List<Point>> mapGroupedByRegion = new HashMap<>();
 
         List<Point> alreadyVisited = new ArrayList<>();
 
