@@ -15,8 +15,8 @@ public class SolutionDay12
 {
     public static void main(String[] args)
     {
-        star1();
-        //star2()
+        //star1();
+        star2();
     }
 
     public static void star1()
@@ -128,5 +128,159 @@ public class SolutionDay12
         System.out.println("Region " + input[points.get(0).x][points.get(0).y] + ", size " + elements + ", circumference " + circumference);
 
         return elements * circumference;
+    }
+
+    public static void star2()
+    {
+        String filePath = new File("").getAbsolutePath();
+        String[][] input = PuzzleUtils.readInputAs2DArray(filePath + "/day_12/input.txt");
+
+        int rows = input.length;
+        int columns = input[0].length;
+
+        List<Point> alreadyVisited = new ArrayList<>();
+
+        int solution = 0;
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; j++)
+            {
+                if (alreadyVisited.contains(new Point(i, j)))
+                {
+                    continue;
+                }
+                else
+                {
+                    Point startPoint = new Point(i, j);
+                    List<Point> startPoints = Arrays.asList(startPoint);
+
+                    List<Point> neighbouringPoints = checkNeighbours(startPoints, input);
+
+                    while(!(startPoints.containsAll(neighbouringPoints) && neighbouringPoints.containsAll(startPoints)))
+                    {
+                        startPoints = neighbouringPoints;
+                        neighbouringPoints = checkNeighbours(startPoints, input);
+                    }
+
+                    solution += getScorePart2(startPoints, input);
+
+                    alreadyVisited.addAll(startPoints);
+                }
+            }
+        }
+
+        System.out.println("Ergebnis: " + solution);
+    }
+
+    public static int getScorePart2(List<Point> points, String[][] input)
+    {
+        int rows = input.length;
+        int columns = input[0].length;
+        int elements = points.size();
+        int circumference = 0;
+
+        //for rows
+        List<Integer> affectedColumns = new ArrayList<>();
+        boolean addOuterRowEdge = false;
+        for (int i = 0; i < rows; i++)
+        {
+            List<Integer> newColumns = new ArrayList<>();
+            List<Integer> removedColumns = new ArrayList<>();
+            for (int j = 0; j < columns; j++)
+            {
+                if (points.contains(new Point(i, j)))
+                {
+                    if (!affectedColumns.contains(j))
+                    {
+                        affectedColumns.add(j);
+                        newColumns.add(j);
+                    }
+                    if (i == rows - 1)
+                    {
+                        addOuterRowEdge = true;
+                    }
+                }
+            }
+
+            List<Integer> iterateAffectedColumns = new ArrayList<>(affectedColumns);
+            for (Integer p : iterateAffectedColumns)
+            {
+                if (!points.contains(new Point(i, p)))
+                {
+                    removedColumns.add(p);
+                    affectedColumns.remove(p);
+                }
+            }
+            
+            circumference += getScoreForColumnOrRow(newColumns);
+            circumference += getScoreForColumnOrRow(removedColumns);
+        }
+
+
+        //for columns
+        List<Integer> affectedRows = new ArrayList<>();
+        boolean addOuterColumnEdge = false;
+        for (int j = 0; j < columns; j++)
+        {
+            List<Integer> newRows = new ArrayList<>();
+            List<Integer> removedRows = new ArrayList<>();
+            for (int i = 0; i < columns; i++)
+            {
+                if (points.contains(new Point(i, j)))
+                {
+                    if (!affectedRows.contains(i))
+                    {
+                        affectedRows.add(i);
+                        newRows.add(i);
+                    }
+                    if (j == columns - 1)
+                    {
+                        addOuterColumnEdge = true;
+                    }
+                }
+            }
+
+            List<Integer> iterateAffectedRows = new ArrayList<>(affectedRows);
+            for (Integer p : iterateAffectedRows)
+            {
+                if (!points.contains(new Point(p, j)))
+                {
+                    removedRows.add(p);
+                    affectedRows.remove(p);
+                }
+            }
+
+            circumference += getScoreForColumnOrRow(newRows);
+            circumference += getScoreForColumnOrRow(removedRows);
+        }
+
+        if(addOuterColumnEdge)
+        {
+            circumference += 1;
+        }
+        if(addOuterRowEdge)
+        {
+            circumference += 1;
+        }
+
+        
+        System.out.println("Region " + input[points.get(0).x][points.get(0).y] + ", size " + elements + ", circumference " + circumference);
+
+        return elements * circumference;
+    }
+
+    public static int getScoreForColumnOrRow(List<Integer> columnsOrRows)
+    {
+        int score = 0;
+        for (Integer i : columnsOrRows)
+        {
+            if (!columnsOrRows.contains(i - 1))
+            {
+                score += 1;
+            }
+        }
+
+        return score;
     }
 }
