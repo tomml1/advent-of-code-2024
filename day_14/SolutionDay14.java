@@ -1,10 +1,14 @@
 package day_14;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import utils.PuzzleUtils;
+import java.awt.Point;
 
 import static java.util.Map.entry;
 
@@ -12,7 +16,8 @@ public class SolutionDay14
 {
     public static void main(String[] args)
     {
-        star1();
+        //star1();
+        star2();
     }
 
     public static void star1()
@@ -71,6 +76,38 @@ public class SolutionDay14
             {
                 quadrants.put(4, quadrants.get(4) + 1);
             }
+        }
+    }
+
+    public static void star2()
+    {
+        List<PointWithVelocity> input = getInput();
+        int width = 101, //x
+            length = 103, //y
+            seconds = 10000;
+
+
+        for (int i = 100; i < seconds; i++)
+        {
+            simulate(i, input, width, length);
+        }
+    }
+
+    public static void simulate(int seconds, List<PointWithVelocity> input, int width, int length)
+    {
+        Set<Point> newPoints = new HashSet<>();
+
+        for (PointWithVelocity p : input)
+        {
+            int newX = Math.floorMod(((int)p.startPoint.getX() + seconds * p.vx), width);
+            int newY = Math.floorMod(((int)p.startPoint.getY() + seconds * p.vy), length);
+            Point newPoint = new Point(newX, newY);
+            newPoints.add(newPoint);
+        }
+
+        if (newPoints.size() == 500)
+        {
+            System.out.println("maybe: " + seconds);
         }
     }
 }
