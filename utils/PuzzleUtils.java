@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import day_14.PointWithVelocity;
 
 public class PuzzleUtils {
     public static String readInputAsString(String filename)
@@ -195,6 +198,35 @@ public class PuzzleUtils {
         }
         catch (Exception e) {
             throw new RuntimeException();
+        }
+    }
+
+    public static List<PointWithVelocity> getInputForDay14(String filename)
+    {
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            String line = br.readLine();
+            List<PointWithVelocity> input = new ArrayList<>();
+
+            while (line != null)
+            {
+                Pattern p = Pattern.compile("p=(-{0,1}\\d+),(-{0,1}\\d+) v=(-{0,1}\\d+),(-{0,1}\\d+)");
+                Matcher m = p.matcher(line);
+
+                if(m.find())
+                {
+                    PointWithVelocity pointLine = new PointWithVelocity(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), Integer.parseInt(m.group(4)));
+                    input.add(pointLine);
+                }
+                
+                line = br.readLine();
+            }
+            return input;
+        }
+        catch(Exception e) 
+        {
+            e.printStackTrace();
+            return null;
         }
     }
 }
