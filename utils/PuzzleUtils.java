@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import day_13.Day13SingleInput;
 import java.util.regex.Matcher;
 import day_14.PointWithVelocity;
 
@@ -221,6 +222,41 @@ public class PuzzleUtils {
                 
                 line = br.readLine();
             }
+            return input;
+        }
+        catch(Exception e) 
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static List<Day13SingleInput> getInputForDay13(String filename)
+    {
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+            List<Day13SingleInput> input = new ArrayList<>();
+
+            while (line != null)
+            {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+
+            String wholeFile = sb.toString();
+
+            Pattern p = Pattern.compile("Button A: X\\+(\\d+), Y\\+(\\d+)\nButton B: X\\+(\\d+), Y\\+(\\d+)\nPrize: X=(\\d+), Y=(\\d+)");
+            Matcher m = p.matcher(wholeFile);
+
+            while (m.find())
+            {
+                Day13SingleInput singleInput = new Day13SingleInput(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), Integer.parseInt(m.group(4)), Integer.parseInt(m.group(5)), Integer.parseInt(m.group(6)));
+                input.add(singleInput);
+            }
+
             return input;
         }
         catch(Exception e) 
