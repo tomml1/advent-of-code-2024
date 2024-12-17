@@ -1,14 +1,14 @@
 package day_13;
 
 public class Day13SingleInput {
-    int ax,
+    long ax,
         ay,
         bx,
         by,
         px,
         py;
 
-    public Day13SingleInput(int ax, int ay, int bx, int by, int px, int py)
+    public Day13SingleInput(long ax, long ay, long bx, long by, long px, long py)
     {
         this.ax = ax;
         this.ay = ay;
