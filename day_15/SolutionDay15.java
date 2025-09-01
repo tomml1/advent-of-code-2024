@@ -10,7 +10,9 @@ public class SolutionDay15
 {
     public static void main(String[] args)
     {
-        star1();
+        //star1("testinputmace.txt", "testinputmoves.txt"); //2028
+        //star1("testinputmace2.txt", "testinputmoves2.txt"); //10092
+        star2();
     }
 
     public static void star1(String fileNameMaze, String fileNameMoves)
