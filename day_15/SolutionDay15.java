@@ -274,39 +274,77 @@ public class SolutionDay15
 
     public static void star2()
     {
-        String[][] maze = getMaze("customtestinputmace.txt");
-        String[] moves = getMoves("customtestinputmoves.txt");
+        String[][] maze = getMaze("inputmace.txt");
+        String[] moves = getMoves("inputmoves.txt");
         String[][] expandedMaze = expandMaze(maze);
-        visualizeBetter(expandedMaze);
+        //visualizeBetter(expandedMaze);
 
         Point startPosition = getStartPosition(expandedMaze);
 
         Boolean possible = true;
+        Possibility poss = new Possibility(true);
 
         for (var move : moves)
         {
-            System.out.println("current move: " + move);
+            //System.out.println("current move: " + move);
             if (move.equals("<") || move.equals(">"))
             {
-                String[][] testMaze = expandedMaze.clone();
-                moveBoxesHorizontally(startPosition, move, testMaze, possible);
-                if(possible)
+                //String[][] testMaze = expandedMaze.clone();
+                String[][] testMaze = deepCopy(expandedMaze);
+                //System.out.println("Koordinaten startPosition: " + startPosition.getX() + ", " + startPosition.getY());
+                Point currentPosition = new Point(startPosition);
+                moveBoxesHorizontally(currentPosition, move, testMaze, poss);
+                //System.out.println("possible: " + poss.getPossible());
+                if(poss.getPossible())
                 {
+                    //System.out.println("wird überschrieben");
                     expandedMaze = testMaze;
+                    //System.out.println("Koordinaten currentPosition: " + currentPosition.getX() + ", " + currentPosition.getY());
+
+                    startPosition = currentPosition;
                 }
             }
             else if (move.equals("^") || move.equals("v"))
             {
-                String[][] testMaze = expandedMaze.clone();
-                moveBoxesRecursively(startPosition, move, testMaze, possible);
-                if(possible)
+                //String[][] testMaze = expandedMaze.clone();
+                String[][] testMaze = deepCopy(expandedMaze);
+                //System.out.println("Koordinaten startPosition: " + startPosition.getX() + ", " + startPosition.getY());
+                Point currentPosition = new Point(startPosition);
+                moveBoxesRecursively(currentPosition, move, testMaze, poss);
+                //System.out.println("possible: " + poss.getPossible());
+                if(poss.getPossible())
                 {
+                    //System.out.println("wird überschrieben");
                     expandedMaze = testMaze;
+                    //System.out.println("Koordinaten currentPosition: " + currentPosition.getX() + ", " + currentPosition.getY());
+                    startPosition = currentPosition;
                 }
             }
-            possible = true;
-            visualizeBetter(expandedMaze);
+            poss.setPossible(true);
+            //visualizeBetter(expandedMaze);
         }
+
+        int rowNumber = expandedMaze.length;
+        int columnNumber = expandedMaze[0].length;
+
+        int solution = 0;
+        for (int i = 0; i < rowNumber; i++)
+        {
+            for (int j = 0; j < columnNumber; j++)
+            {
+                if (expandedMaze[i][j].equals("["))
+                {
+                    solution += 100 * i;
+                    solution += j;
+                }
+            }
+        }
+        visualizeBetter(expandedMaze);
+        System.out.println(solution);
+    }
+
+    public static <T> T[][] deepCopy(T[][] matrix) {
+        return java.util.Arrays.stream(matrix).map(el -> el.clone()).toArray($ -> matrix.clone());
     }
 
     public static String[][] expandMaze(String[][] maze)
@@ -354,7 +392,7 @@ public class SolutionDay15
         return false;
     }
 
-    public static void moveBoxesHorizontally(Point position, String direction, String[][] maze, Boolean possible) {
+    public static void moveBoxesHorizontally(Point position, String direction, String[][] maze, Possibility possible) {
         int directionIncrement;
         if (direction.equals("<"))
         {
@@ -384,12 +422,13 @@ public class SolutionDay15
         }
         else if (maze[posY][posX + directionIncrement].equals("#"))
         {
-            possible = false;
+            possible.setPossible(false);
+            //System.out.println("HIER STOPPEN");
             return;
         }
     }
 
-    public static void moveBoxesRecursively(Point position, String direction, String[][] maze, Boolean possible)
+    public static void moveBoxesRecursively(Point position, String direction, String[][] maze, Possibility possible)
     {
         //BFS to determine if moving is possible
         int directionIncrement;
@@ -430,7 +469,8 @@ public class SolutionDay15
         }
         else if (maze[posY + directionIncrement][posX].equals("#"))
         {
-            possible = false;
+            possible.setPossible(false);
+            //System.out.println("HIER STOPPEN");
             return;
         }
     }
