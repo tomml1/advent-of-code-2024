@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import day_13.Day13SingleInput;
 import java.util.regex.Matcher;
 import day_14.PointWithVelocity;
+import day_17.ChronospatialComputer;
 
 public class PuzzleUtils {
     public static String readInputAsString(String filename)
@@ -260,6 +261,53 @@ public class PuzzleUtils {
             return input;
         }
         catch(Exception e) 
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static ChronospatialComputer getChronospatialComputer(String filename)
+    {
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null)
+            {
+                sb.append(line);
+                sb.append("\n");
+                line = br.readLine();
+            }
+
+            String wholeFile = sb.toString();
+
+            Pattern registerAPattern = Pattern.compile("Register A: (\\d+)");
+            Pattern registerBPattern = Pattern.compile("Register B: (\\d+)");
+            Pattern registerCPattern = Pattern.compile("Register C: (\\d+)");
+            Pattern programPattern = Pattern.compile("Program: ([\\d+|,]+)");
+
+            Matcher matcherRegisterA = registerAPattern.matcher(wholeFile);
+            Matcher matcherRegisterB = registerBPattern.matcher(wholeFile);
+            Matcher matcherRegisterC = registerCPattern.matcher(wholeFile);
+            Matcher matcherProgram = programPattern.matcher(wholeFile);
+
+            matcherRegisterA.find();
+            matcherRegisterB.find();
+            matcherRegisterC.find();
+            matcherProgram.find();
+            int registerA = Integer.parseInt(matcherRegisterA.group(1));
+            int registerB = Integer.parseInt(matcherRegisterB.group(1));
+            int registerC = Integer.parseInt(matcherRegisterC.group(1));
+            String programString = matcherProgram.group(1);
+            List<Integer> program = Arrays.stream(programString.split(",")).mapToInt(Integer::parseInt).boxed().toList();
+
+            ChronospatialComputer csp = new ChronospatialComputer(registerA, registerB, registerC, program);
+
+            return csp;
+        }
+        catch(Exception e)
         {
             e.printStackTrace();
             return null;
