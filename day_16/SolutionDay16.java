@@ -18,10 +18,11 @@ public class SolutionDay16
     public static void star1()
     {
         String filePath = new File("").getAbsolutePath();
-        String filename = "testinput2.txt";
+        String filename = "input.txt";
         String[][] input = PuzzleUtils.readInputAs2DArray(filePath + "/day_16/" + filename);
 
         Point startPosition = getStartPosition(input);
+        Positioning startPositioning = new Positioning(startPosition.x, startPosition.y, Direction.EAST, 0, null);
         System.out.println("Starting position: " + startPosition);
 
         /*
@@ -40,39 +41,73 @@ public class SolutionDay16
         Set<Positioning> visited = new HashSet<>();
         Set<Positioning> alreadyAdded = new HashSet<>();
 
-        alreadyAdded.add(new Positioning(startPosition.x, startPosition.y, Direction.EAST, 0));
+        alreadyAdded.add(startPositioning);
 
         LinkedList<Positioning> pg = new LinkedList<>();
-        pg.add(new Positioning(startPosition.x, startPosition.y, Direction.EAST, 0));
+        pg.add(startPositioning);
 
         Point endPosition = getEndPosition(input);
+        System.out.println("End position: " + endPosition);
 
         System.out.println("Number nodes: " + getNumberNodes(input));
 
-        while(pg.size() > 0)
+        Map<String, Positioning> nodeMap = createNodeMap(input);
+
+        System.out.println("Number nodes with directions: " + nodeMap.size());
+
+        nodeMap.put("x=" + startPosition.x + ",y=" + startPosition.y + "E", startPositioning);
+
+        PriorityQueue<Positioning> pq2 = new PriorityQueue<>(Comparator.comparing(Positioning::getScore));
+
+        pq2.addAll(nodeMap.values());
+
+        while (!pq2.isEmpty())
         {
-            Positioning current = pg.poll();
-            List<Positioning> neighbors = current.getAdjacentPositionings(input);
+            Positioning current = pq2.poll();
+            List<Positioning> neighbors = current.getAdjacentPositionings2(input);
             for (var neighbor : neighbors) {
-                updateDistance(distanceMap, current.getPoint(), neighbor);
-                alreadyAdded.add(neighbor);
-                if (!visited.contains(neighbor) || !alreadyAdded.contains(neighbor)) {
-                    pg.add(neighbor);
+                String key = "x=" + neighbor.getX() + ",y=" + neighbor.getY() + neighbor.getDirection().toString();
+                Positioning mapNeighbor = nodeMap.get(key);
+                int newDistance = current.getScore() + neighbor.getScore();
+                if (newDistance < mapNeighbor.getScore()) {
+                    mapNeighbor.setScore(newDistance);
+                    mapNeighbor.setPrevious(current);
+                    pq2.remove(mapNeighbor);
+                    pq2.add(mapNeighbor);
                 }
             }
-            visited.add(current);
+            current.setComplete(true);
         }
 
-        System.out.println("Score: " + distanceMap.get(endPosition));
+        String endKey = "x=" + endPosition.x + ",y=" + endPosition.y;
+        System.out.println("Ende E: " + nodeMap.get(endKey + "EAST"));
+        System.out.println("Ende N: " + nodeMap.get(endKey + "NORTH"));
+        System.out.println("Ende W: " + nodeMap.get(endKey + "WEST"));
+        System.out.println("Ende S: " + nodeMap.get(endKey + "SOUTH"));
     }
 
-    public static void updateDistance(Map<Point, Integer> distanceMap, Point current, Positioning neighbor) {
-        int currentDistance = distanceMap.get(current);
-        Point neighborPoint = neighbor.getPoint();
-        int newDistance = neighbor.getScore();
-        if (!distanceMap.containsKey(neighborPoint) || newDistance < distanceMap.get(neighborPoint)) {
-            distanceMap.put(neighborPoint, newDistance);
+    public static Map<String, Positioning> createNodeMap(String[][] maze)
+    {
+        int rowNumber = maze.length;
+        int columnNumber = maze[0].length;
+
+        Map<String, Positioning> nodeMap = new HashMap<>();
+
+        for (int i = 0; i < rowNumber; i++)
+        {
+            for (int j = 0; j < columnNumber; j++)
+            {
+                if (!maze[i][j].equals("#"))
+                {
+                    nodeMap.put("x=" + j + ",y=" + i + "EAST", new Positioning(j, i, Direction.EAST, Integer.MAX_VALUE, null));
+                    nodeMap.put("x=" + j + ",y=" + i + "NORTH", new Positioning(j, i, Direction.NORTH, Integer.MAX_VALUE, null));
+                    nodeMap.put("x=" + j + ",y=" + i + "SOUTH", new Positioning(j, i, Direction.SOUTH, Integer.MAX_VALUE, null));
+                    nodeMap.put("x=" + j + ",y=" + i + "WEST", new Positioning(j, i, Direction.WEST, Integer.MAX_VALUE, null));
+                }
+            }
         }
+
+        return nodeMap;
     }
 
     public static Point getStartPosition(String[][] maze)

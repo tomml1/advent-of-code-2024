@@ -11,13 +11,17 @@ public class Positioning {
     private Point point;
     private Direction direction;
     private int score;
+    private boolean complete;
+    private Positioning previous;
 
-    public Positioning(int x, int y, Direction direction, int score) {
+    public Positioning(int x, int y, Direction direction, int score, Positioning previous) {
         this.x = x;
         this.y = y;
         this.point = new Point(x, y);
         this.direction = direction;
         this.score = score;
+        this.complete = false;
+        this.previous = previous;
     }
 
     public int getY() {
@@ -60,6 +64,22 @@ public class Positioning {
         this.point = point;
     }
 
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public boolean setComplete(boolean complete) {
+        return this.complete = complete;
+    }
+
+    public Positioning getPrevious() {
+        return previous;
+    }
+
+    public void setPrevious(Positioning previous) {
+        this.previous = previous;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -76,13 +96,36 @@ public class Positioning {
 
     public List<Positioning> getAdjacentPositionings(String[][] maze)
     {
-        Positioning clockwiseRotation = new Positioning(this.x, this.y, this.direction.clockwise(), this.score + 1000);
-        Positioning counterClockwiseRotation = new Positioning(this.x, this.y, this.direction.counterClockwise(), this.score + 1000);
+        Positioning clockwiseRotation = new Positioning(this.x, this.y, this.direction.clockwise(), this.score + 1000, this);
+        Positioning counterClockwiseRotation = new Positioning(this.x, this.y, this.direction.counterClockwise(), this.score + 1000, this);
         Point directionVector = this.direction.getDirectionVector();
         if (!maze[this.y + directionVector.y][this.x + directionVector.x].equals("#")) {
-            Positioning forwardMovement = new Positioning(this.x + directionVector.x, this.y + directionVector.y, this.direction, this.score + 1);
+            Positioning forwardMovement = new Positioning(this.x + directionVector.x, this.y + directionVector.y, this.direction, this.score + 1, this);
             return Arrays.asList(forwardMovement, clockwiseRotation, counterClockwiseRotation);
         }
         return List.of(clockwiseRotation, counterClockwiseRotation);
+    }
+
+    public List<Positioning> getAdjacentPositionings2(String[][] maze)
+    {
+        Positioning clockwiseRotation = new Positioning(this.x, this.y, this.direction.clockwise(), 1000, this);
+        Positioning counterClockwiseRotation = new Positioning(this.x, this.y, this.direction.counterClockwise(), 1000, this);
+        Point directionVector = this.direction.getDirectionVector();
+        if (!maze[this.y + directionVector.y][this.x + directionVector.x].equals("#")) {
+            Positioning forwardMovement = new Positioning(this.x + directionVector.x, this.y + directionVector.y, this.direction, 1, this);
+            return Arrays.asList(forwardMovement, clockwiseRotation, counterClockwiseRotation);
+        }
+        return List.of(clockwiseRotation, counterClockwiseRotation);
+    }
+
+    public String toString()
+    {
+        return "Positioning{" +
+                "x=" + x +
+                ", y=" + y +
+                ", point=" + point +
+                ", direction=" + direction +
+                ", score=" + score +
+                '}';
     }
 }
