@@ -1,6 +1,8 @@
 package day_16;
 
 import java.awt.*;
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -12,9 +14,9 @@ public class Positioning {
     private Direction direction;
     private int score;
     private boolean complete;
-    private Positioning previous;
+    private List<Positioning> previous;
 
-    public Positioning(int x, int y, Direction direction, int score, Positioning previous) {
+    public Positioning(int x, int y, Direction direction, int score, List<Positioning> previous) {
         this.x = x;
         this.y = y;
         this.point = new Point(x, y);
@@ -72,12 +74,16 @@ public class Positioning {
         return this.complete = complete;
     }
 
-    public Positioning getPrevious() {
+    public List<Positioning> getPrevious() {
         return previous;
     }
 
-    public void setPrevious(Positioning previous) {
+    public void setPrevious(List<Positioning> previous) {
         this.previous = previous;
+    }
+
+    public void addPrevious(Positioning previous) {
+        this.previous.add(previous);
     }
 
     @Override
@@ -94,25 +100,13 @@ public class Positioning {
         return Objects.hash(x, y, point, direction);
     }
 
-    public List<Positioning> getAdjacentPositionings(String[][] maze)
-    {
-        Positioning clockwiseRotation = new Positioning(this.x, this.y, this.direction.clockwise(), this.score + 1000, this);
-        Positioning counterClockwiseRotation = new Positioning(this.x, this.y, this.direction.counterClockwise(), this.score + 1000, this);
-        Point directionVector = this.direction.getDirectionVector();
-        if (!maze[this.y + directionVector.y][this.x + directionVector.x].equals("#")) {
-            Positioning forwardMovement = new Positioning(this.x + directionVector.x, this.y + directionVector.y, this.direction, this.score + 1, this);
-            return Arrays.asList(forwardMovement, clockwiseRotation, counterClockwiseRotation);
-        }
-        return List.of(clockwiseRotation, counterClockwiseRotation);
-    }
-
     public List<Positioning> getAdjacentPositionings2(String[][] maze)
     {
-        Positioning clockwiseRotation = new Positioning(this.x, this.y, this.direction.clockwise(), 1000, this);
-        Positioning counterClockwiseRotation = new Positioning(this.x, this.y, this.direction.counterClockwise(), 1000, this);
+        Positioning clockwiseRotation = new Positioning(this.x, this.y, this.direction.clockwise(), 1000, new ArrayList<>(List.of(this)));
+        Positioning counterClockwiseRotation = new Positioning(this.x, this.y, this.direction.counterClockwise(), 1000, new ArrayList<>(List.of(this)));
         Point directionVector = this.direction.getDirectionVector();
         if (!maze[this.y + directionVector.y][this.x + directionVector.x].equals("#")) {
-            Positioning forwardMovement = new Positioning(this.x + directionVector.x, this.y + directionVector.y, this.direction, 1, this);
+            Positioning forwardMovement = new Positioning(this.x + directionVector.x, this.y + directionVector.y, this.direction, 1, new ArrayList<>(List.of(this)));
             return Arrays.asList(forwardMovement, clockwiseRotation, counterClockwiseRotation);
         }
         return List.of(clockwiseRotation, counterClockwiseRotation);

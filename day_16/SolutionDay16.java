@@ -6,6 +6,7 @@ import java.awt.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class SolutionDay16
 {
@@ -15,8 +16,7 @@ public class SolutionDay16
         star1();
     }
 
-    public static void star1()
-    {
+    public static void star1() {
         String filePath = new File("").getAbsolutePath();
         String filename = "input.txt";
         String[][] input = PuzzleUtils.readInputAs2DArray(filePath + "/day_16/" + filename);
@@ -61,8 +61,7 @@ public class SolutionDay16
 
         pq2.addAll(nodeMap.values());
 
-        while (!pq2.isEmpty())
-        {
+        while (!pq2.isEmpty()) {
             Positioning current = pq2.poll();
             List<Positioning> neighbors = current.getAdjacentPositionings2(input);
             for (var neighbor : neighbors) {
@@ -71,9 +70,11 @@ public class SolutionDay16
                 int newDistance = current.getScore() + neighbor.getScore();
                 if (newDistance < mapNeighbor.getScore()) {
                     mapNeighbor.setScore(newDistance);
-                    mapNeighbor.setPrevious(current);
+                    mapNeighbor.setPrevious(new ArrayList<>(List.of(current)));
                     pq2.remove(mapNeighbor);
                     pq2.add(mapNeighbor);
+                } else if (newDistance == mapNeighbor.getScore()) {
+                    mapNeighbor.addPrevious(neighbor);
                 }
             }
             current.setComplete(true);
@@ -84,6 +85,55 @@ public class SolutionDay16
         System.out.println("Ende N: " + nodeMap.get(endKey + "NORTH"));
         System.out.println("Ende W: " + nodeMap.get(endKey + "WEST"));
         System.out.println("Ende S: " + nodeMap.get(endKey + "SOUTH"));
+
+        Positioning minEnd = Stream.of(nodeMap.get(endKey + "EAST"), nodeMap.get(endKey + "NORTH"), nodeMap.get(endKey + "WEST"), nodeMap.get(endKey + "SOUTH"))
+                .filter(Objects::nonNull)
+                .min(Comparator.comparing(Positioning::getScore)).get();
+
+        System.out.println("Minimum steps to reach the end: " + minEnd.getScore());
+
+        printMaze(input);
+
+        input[minEnd.getY()][minEnd.getX()] = "O";
+
+        List<Positioning> previous = minEnd.getPrevious();
+
+        startPositioning.setPrevious(new ArrayList<>());
+
+        while (!previous.isEmpty()) {
+            Set<Positioning> nextPrevious = new HashSet<>();
+            for (var prev : previous) {
+                input[prev.getY()][prev.getX()] = "O";
+                nextPrevious.addAll(prev.getPrevious());
+            }
+            previous = new ArrayList<>(nextPrevious);
+        }
+
+        int part2Score = 0;
+        for (int i = 0; i < input.length; i++) {
+            for (int j = 0; j < input[0].length; j++) {
+                if (input[i][j].equals("O")) {
+                    part2Score++;
+                }
+            }
+        }
+
+        System.out.println("Part 2 Score: " + part2Score);
+    }
+
+    public static void printMaze(String[][] maze)
+    {
+        int rowNumber = maze.length;
+        int columnNumber = maze[0].length;
+
+        for (int i = 0; i < rowNumber; i++)
+        {
+            for (int j = 0; j < columnNumber; j++)
+            {
+                System.out.print(maze[i][j]);
+            }
+            System.out.println();
+        }
     }
 
     public static Map<String, Positioning> createNodeMap(String[][] maze)
