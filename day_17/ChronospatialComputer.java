@@ -176,12 +176,18 @@ public class ChronospatialComputer {
 
         System.out.println("Program finished");
         System.out.println("Final state:\nRegister A = " + getRegisterA() + "\nRegister B = " + getRegisterB() + "\nRegister C = " + getRegisterC());
-        String output = "";
-        for (Integer i : getOutput()) {
-            output += i + ",";
+
+        if (!output.isEmpty()) {
+            String outputString = "";
+            for (Integer i : getOutput()) {
+                outputString += i + ",";
+            }
+            outputString = outputString.substring(0, outputString.length() - 1);
+            System.out.println("Output: " + outputString);
         }
-        output = output.substring(0, output.length() - 1);
-        System.out.println("Output: " + output);
+        else {
+            System.out.println("No output");
+        }
     }
 
     public Integer handleOperand(OperandType operandType, Integer operand) {
@@ -201,5 +207,12 @@ public class ChronospatialComputer {
                 }
             }
         };
+    }
+
+    public void runProgramWithoutPrints() {
+        while (instructionPointer < program.size()) {
+            Instruction instruction = instructions.get(program.get(instructionPointer));
+            instruction.getFunction().apply(this);
+        }
     }
 }
