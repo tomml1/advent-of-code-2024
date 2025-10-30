@@ -1,0 +1,103 @@
+Register A = 25358015
+Register B = 0
+Register C = 0
+
+Program: 2,4,1,1,7,5,0,3,4,7,1,6,5,5,3,0
+
+#1
+2,  combo operand modulo 8 and writes to register B
+4,  means value of register A
+nimmt also die letzten 3 Bits von Register A und schreibt sie in Register B
+
+#2
+1,  bitwise XOR of register B with literal operand and stores in register B
+1,  means literal 1
+macht also Register B (letzten 3 Bits von Register A) XOR mit 0b001 und speichert in Register B
+
+#3
+7,  divides register A by 2 to the power of the combo operand and stores truncated result in register C
+5,  means value of register B
+teilt also Register A durch 2^Register B (also schiebt Register A um den Wert in Register B nach rechts) und speichert in Register C
+
+#4
+0,  divides register A by 2 to the power of the combo operand and stores truncated result in register A
+3,  means literal 3
+teilt also Register A durch 2^3 (also schiebt Register A um 3 nach rechts) und speichert in Register A
+
+#5
+4,  bitwise XOR of register B and register C and stores in register B
+7,  ignored
+macht also Register B XOR Register C und speichert in Register B
+
+#6
+1,  bitwise XOR of register B with literal operand and stores in register B
+6,  means literal 6
+macht also Register B XOR mit 0b110 und speichert in Register B
+
+#7
+5,  combo operand modulo 8 and outputs that value
+5,  means value of register B
+gibt also den Wert in Register B modulo 8 (letzten 3 Bits) aus
+
+#8
+3,  does nothing if register A == 0, else jumps by setting instruction pointer to the value of literal operand
+0   means literal 0
+startet also wieder von vorne wenn Register A != 0 ist
+
+
+
+// Zusammenfassung:
+#1
+take last 3 bits of A -> B
+so B = A & 0b111
+
+#2
+then B = B ^ 0b001
+so B = (A & 0b111) ^ 0b001
+
+#3
+then C = A >> B
+so C = A >> (A & 0b111) ^ 0b001
+
+#4
+then A = A >> 3
+
+#5
+then B = B ^ C
+
+#6
+then B = B ^ 0b110 = (B ^ C) ^ 0b110 = (((A & 0b111) ^ 0b001)) ^ (A >> (A & 0b111) ^ 0b001))) ^ 0b110
+
+#7
+then output B & 0b111
+
+#8
+repeat until A == 0
+A wird nur im Schritt #4 verändert, also wird der Loop genau so oft durchlaufen
+
+
+
+if the program is X_16,X_15,X_14,...,X_0
+look for all a0s which f(a0) output X_0
+look for all a1s which f(a0 * 8 + a1) output X_1,X_0
+look for all a2s which f(a0 * 8 * 8 + a1 * 8 + a2) output X_2,X_1,X_0
+...
+until we can scan for a16s
+
+all a_i is guaranteed to be in 0 to 7
+
+mal 8, weil ja A um 3 nach rechts geschiftet wird, also muss man um 3 nach links shiften, was *2^3 entspricht
+
+
+Lösung ist:
+a0 * 8^15 + a1 * 8^14 + a2 * 8^13 + ... + a14 * 8^1 + a15 * 8^0
+
+Programm ist:
+x15, x14, x13, ..., x1, x0
+
+erfüllt:
+f(a0) = x0
+f(a0 * 8 + a1) = x1, x0
+f(a0 * 8^2 + a1 * 8 + a2) = x2, x1, x0
+...
+f(a0 * 8^15 + a1 * 8^14 + ... + a15) = x15, x14, ..., x1, x0
